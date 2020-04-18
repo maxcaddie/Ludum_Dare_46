@@ -1,0 +1,37 @@
+Ludum Dare 46
+
+Theme: Keep it alive
+
+Personal objective: 
+    - Export to Mac and Windows
+    - Finish!
+    - Implement an A* pathfinding algorthim
+    - Stretch (MinMax enemy)
+
+Title: TBC
+
+Description:
+Turn based endless strategy game
+9x9 Board
+You have two tiles, when stacked can move 2 squares, otherwise 1 tile
+There is an enemy who can AOE explode you, this causes a chain reaction
+New enemies spawn with warning
+
+Technologies:
+    - Python3.8.2
+    - Pygame
+
+Plan:
+
+Goal 0 Generate board
+0.0: Represent board as a 2D array locally
+0.1: Draw squares on screen
+0.2: Leave a boarder around the edge
+
+Goal 1 Player
+1.0: Represent the player as positive ints in array
+1.1: Update square on screen to have number of friendly
+1.2: Click and select
+1.3: Highlight tiles 2 away
+1.4: Highlight all tiles reachable
+1.5: Allow movements
