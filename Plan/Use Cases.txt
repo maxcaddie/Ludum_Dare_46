@@ -1,0 +1,12 @@
+Use case 1
+
+1) The player opens the game
+2) The player is able to see the board and the tokens
+3) Player is able to select a tile
+4) The player is able to move the selected token to a valid tile
+4a) If the tile is not valid don't let the player move it there
+5) Player is able to see tile move
+6) Enemy is makes a move
+7) Player is able to see the enemy move
+8) Repeat 3-7 until all player tiles die
+9) Stop game

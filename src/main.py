@@ -1,22 +1,16 @@
 import pygame
-
-SIZE = 1.2
-HEIGHT = int(SIZE*800)
-WIDTH = int(SIZE*600)
-white = [255, 255, 255]
+from Graphics import Graphics
+from Move import Move
 
 
 def main():
     pygame.init()
 
-    game_display = pygame.display.set_mode((HEIGHT, WIDTH))
-    pygame.display.set_caption('TBC')
-
-    game_display.fill(white)
-
+    game_graphics = Graphics()
     clock = pygame.time.Clock()
-    crashed = False
+    current_players_turn = True
 
+    crashed = False
     while not crashed:
 
         for event in pygame.event.get():
@@ -25,11 +19,17 @@ def main():
 
             print(event)
 
-        pygame.display.update()
+        game_graphics.updateGraphics()
+
         clock.tick(60)
 
     pygame.quit()
     quit()
+
+
+def updateBoardGraphics():
+    board_state = getState()
+    updateGraphics(board_state)
 
 
 if __name__ == "__main__":
