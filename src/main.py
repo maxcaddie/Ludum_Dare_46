@@ -42,6 +42,8 @@ def main():
                                 game_graphics.updateGraphics(state)
                                 selected_tile = None
                                 enemy.makeMove(game_state)
+                else:
+                    selected_tile = None
 
         state = game_state.getState()
         game_graphics.updateGraphics(state)
