@@ -38,8 +38,14 @@ class Tile(pygame.sprite.Sprite):
             self.colour[i] = self.colour[i]+SELECTED_COLOUR_OFFSET[i]
         self.update_tile()
 
+    def copy(self):
+        return Tile(self.i, self.j)
+
     def isPlayer(self):
         return self.stack_size > 0
 
     def isEmpty(self):
         return self.stack_size == 0
+
+    def isEnemy(self):
+        return self.stack_size < 0

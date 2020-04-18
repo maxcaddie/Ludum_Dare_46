@@ -2,6 +2,7 @@ import pygame
 from Graphics import Graphics
 from Move import Move
 from GameState import GameState
+from Enemy import Enemy
 
 
 def main():
@@ -12,6 +13,7 @@ def main():
 
     game_state = GameState()
     state = game_state.getState()
+    enemy = Enemy()
 
     game_graphics = Graphics(state)
 
@@ -37,6 +39,9 @@ def main():
                             if tile_clicked_on.isEmpty():
                                 game_state.move(
                                     selected_tile, tile_clicked_on, True)
+                                game_graphics.updateGraphics(state)
+                                selected_tile = None
+                                enemy.makeMove(game_state)
 
         state = game_state.getState()
         game_graphics.updateGraphics(state)

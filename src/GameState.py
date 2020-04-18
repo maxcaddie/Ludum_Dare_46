@@ -8,6 +8,7 @@ class GameState:
         self.state = [[Tile(i_counter, j_counter) for i_counter in range(
             0, 9)] for j_counter in range(0, 9)]
         self.addPeices(4, 4, 2, True)
+        self.addPeices(0, 0, -2, False)
 
     def move(self, from_tile, to_tile, player):
         new_move = Move(from_tile.i, from_tile.j, to_tile.i,
@@ -16,8 +17,6 @@ class GameState:
 
     def addPeices(self, i, j, number, player):
         if self.isValidIJ(i, j):
-            if not player:
-                number *= -1
             self.state[i][j].stack_size += number
             self.state[i][j].reset_tile_colour()
 
@@ -57,3 +56,21 @@ class GameState:
 
     def isValidIJ(self, i, j):
         return i < len(self.state) and j < len(self.state[0]) and i >= 0 and j >= 0
+
+    def getEnemyPeices(self):
+        enemy_peices = []
+        for i in range(0, len(self.state)):
+            for j in range(0, len(self.state[0])):
+                tile = self.getTile(i, j)
+                if tile.isEnemy():
+                    enemy_peices.append(tile)
+        return enemy_peices
+
+    def getPlayerPeices(self):
+        player_peices = []
+        for i in range(0, len(self.state)):
+            for j in range(0, len(self.state[0])):
+                tile = self.getTile(i, j)
+                if tile.isPlayer():
+                    player_peices.append(tile)
+        return player_peices
