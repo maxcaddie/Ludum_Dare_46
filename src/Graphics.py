@@ -18,7 +18,7 @@ class Graphics:
 
     def __init__(self, state):
         self.game_display = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption('TBC')
+        pygame.display.set_caption('This game is broken don\'t play')
         for row in state:
             for tile in state:
                 self.tiles.add(tile)
