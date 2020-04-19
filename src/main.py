@@ -44,10 +44,11 @@ def main():
                                 current_players_turn = False
                                 game_graphics.updateGraphics(state)
                                 selected_tile = None
+                                # game_state.printState()
                                 game_state.processMove(
                                     enemy.makeMove(game_state))
-                                for e in game_state.getEnemyPeices():
-                                    print(e.i, e.j)
+                                # for e in game_state.getEnemyPeices():
+                                #     print(e.i, e.j)
                                 current_players_turn = True
                 else:
                     selected_tile = None

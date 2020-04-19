@@ -4,10 +4,7 @@ from Tile import Tile
 
 class Enemy:
     def makeMove(self, game_state):
-        enemy_peices = game_state.getEnemyPeices()
-        player_peices = game_state.getPlayerPeices()
-        move = self.getBestMove(
-            enemy_peices, player_peices, game_state)
+        move = self.getBestMove(game_state)
         return move
 
     def calculate_score_of_board(self, enemy_peices, player_peices):
@@ -35,13 +32,18 @@ class Enemy:
         # print(score)
         return score
 
-    def getBestMove(self, enemy_peices, player_peices, game_state):
+    def getBestMove(self, game_state):
         min_score = 999999999
         min_move = None
-        invalid_tiles = []q
+        invalid_tiles = []
+        player_peices = game_state.getPlayerPeices()
+        enemy_peices = game_state.getEnemyPeices()
+        for p in player_peices:
+            print(p.toString())
         for peice in player_peices:
             invalid_tiles.append((peice.i, peice.j))
         for peice in enemy_peices:
+            print(game_state.getTile(peice.i, peice.j).stack_size)
             reachable = self.getReachable(
                 peice, invalid_tiles, game_state.getState())
             for reach in reachable:
@@ -56,8 +58,10 @@ class Enemy:
                         min_score = this_score
                         min_move = this_move
 
-        game_state.printState()
-        print(min_move.toString())
+        # game_state.printState()
+        # print(min_move.toString())
+        # print(game_state.state[min_move.from_pos[0]]
+        #       [min_move.from_pos[1]].stack_size)
         return min_move
 
     def getMax(self, game_state, depth):
@@ -92,6 +96,7 @@ class Enemy:
         enemy_peices = game_state.getEnemyPeices()
         for peice in player_peices:
             invalid_tiles.append((peice.i, peice.j))
+
         for peice in enemy_peices:
             # print("NEW PEICE")
             # print(peice.i, peice.j)

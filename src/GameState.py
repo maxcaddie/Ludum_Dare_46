@@ -15,22 +15,26 @@ class GameState:
 
     def addPeices(self, i, j, number, player):
         if self.isValidIJ(i, j):
-            self.state[i][j].stack_size += number
-            self.state[i][j].reset_tile_colour()
+            tile = self.getTile(i, j)
+            print(i == tile.i)
+            tile.stack_size += number
+            tile.reset_tile_colour()
 
     def removePeices(self, i, j, number, player):
         self.addPeices(i, j, number*-1, player)
 
     def processMove(self, move):
-        from_i = move.from_pos[0]
-        from_j = move.from_pos[1]
-
+        # self.printState()
+        from_i = move.from_pos[1]
+        from_j = move.from_pos[0]
+        # print(self.state[from_i][from_j].stack_size)
         self.removePeices(from_i, from_j, move.size, move.player)
 
-        to_i = move.to_pos[0]
-        to_j = move.to_pos[1]
+        to_i = move.to_pos[1]
+        to_j = move.to_pos[0]
 
         self.addPeices(to_i, to_j, move.size, move.player)
+        # self.printState()
 
     def getNumberOfPeices(self, positve):
         count = 0
@@ -57,8 +61,8 @@ class GameState:
         return temp_state
 
     def getTile(self, i, j):
-        if self.isValidIJ(i, j):
-            return self.state[i][j]
+        if self.isValidIJ(j, i):
+            return self.state[j][i]
         return None
 
     def isValidIJ(self, i, j):

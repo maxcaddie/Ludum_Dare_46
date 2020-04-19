@@ -12,6 +12,9 @@ class Tile(pygame.sprite.Sprite):
         self.colour = EMPTY_COLOUR.copy()
         self.update_tile()
 
+    def toString(self):
+        return "i: "+str(self.i)+" j: "+str(self.j)+" ss: "+str(self.stack_size)
+
     def update_tile(self):
         self.image = pygame.Surface([TILE_SIZE, TILE_SIZE])
         self.image.fill(self.colour)
