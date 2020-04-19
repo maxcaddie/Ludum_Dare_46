@@ -39,7 +39,9 @@ class Tile(pygame.sprite.Sprite):
         self.update_tile()
 
     def copy(self):
-        return Tile(self.i, self.j)
+        temp_tile = Tile(self.i, self.j)
+        temp_tile.stack_size = self.stack_size
+        return temp_tile
 
     def isPlayer(self):
         return self.stack_size > 0

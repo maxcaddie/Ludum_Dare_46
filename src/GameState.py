@@ -49,6 +49,15 @@ class GameState:
     def getState(self):
         return self.state
 
+    def copy(self):
+        temp_state = GameState()
+        for player in self.getPlayerPeices():
+            temp_state.addPeices(player.i, player.j, player.stack_size, True)
+        for enemy in self.getEnemyPeices():
+            temp_state.addPeices(enemy.i, enemy.j, enemy.stack_size, True)
+
+        return temp_state
+
     def getTile(self, i, j):
         if self.isValidIJ(i, j):
             return self.state[i][j]
