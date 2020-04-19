@@ -6,133 +6,114 @@ class Enemy:
     def makeMove(self, game_state):
         enemy_peices = game_state.getEnemyPeices()
         player_peices = game_state.getPlayerPeices()
-        print(self.calculate_score_of_board(enemy_peices, player_peices))
-        move = self.getMinScore(
+        move = self.getBestMove(
             enemy_peices, player_peices, game_state)
         return move
 
     def calculate_score_of_board(self, enemy_peices, player_peices):
+        # for e in enemy_peices:
+        #     print("e: "+str(e.i), e.j)
+        # for p in player_peices:
+        #     print("p:", p.i, p.j)
         score = 0
         for enemy_peice in enemy_peices:
             score += self.calculate_score_of_peice(enemy_peice, player_peices)
+            # print(score, enemy_peice.i, enemy_peice.j)
         return score
 
     def calculate_score_of_peice(self, enemy_peice, player_peices):
         min_score = 999999
         for player_piece in player_peices:
+            # print(player_piece.i, player_piece.j)
             min_score = min(min_score, self.calculate_score_to_that_peice(
-                enemy_peice, player_piece))
+                enemy_peice, player_piece))*(enemy_peice.stack_size*-1)
         return min_score
 
     def calculate_score_to_that_peice(self, enemy_peice, player_peice):
-        return (abs(enemy_peice.i-player_peice.i)+abs(enemy_peice.j-player_peice.j))*(enemy_peice.stack_size*-1)
+        score = (abs(enemy_peice.i-player_peice.i) +
+                 abs(enemy_peice.j-player_peice.j))
+        # print(score)
+        return score
 
-    def getMinScore(self, enemy_peices, player_peices, game_state):
-        temp_state = game_state.copy()
-        min_move = self.minMove(
-            enemy_peices, player_peices, temp_state, 1)
-        temp_state.processMove(min_move)
+    def getBestMove(self, enemy_peices, player_peices, game_state):
+        min_score = 999999999
+        min_move = None
+        invalid_tiles = []q
+        for peice in player_peices:
+            invalid_tiles.append((peice.i, peice.j))
+        for peice in enemy_peices:
+            reachable = self.getReachable(
+                peice, invalid_tiles, game_state.getState())
+            for reach in reachable:
+                for i in range(1, reach[1]+1):
+                    this_move = Move(peice.i, peice.j,
+                                     reach[0][0], reach[0][1], i*-1, False)
+                    copy_state = game_state.copy()
+                    copy_state.processMove(this_move)
+                    this_score = self.getMax(copy_state, 1)
+
+                    if this_score < min_score:
+                        min_score = this_score
+                        min_move = this_move
+
+        game_state.printState()
+        print(min_move.toString())
         return min_move
 
-    def minMove(self, peices_to_move, peices_to_reach, game_state, depth):
-        state = game_state.getState()
-        moves_possible = []
+    def getMax(self, game_state, depth):
+        max_score = -1
+        max_move = None
         invalid_tiles = []
-        for peice in peices_to_reach:
+        enemy_peices = game_state.getEnemyPeices()
+        player_peices = game_state.getPlayerPeices()
+
+        for peice in enemy_peices:
             invalid_tiles.append((peice.i, peice.j))
+        for peice in player_peices:
+            reachable = self.getReachable(
+                peice, invalid_tiles, game_state.getState())
+            for reach in reachable:
+                this_move = Move(peice.i, peice.j,
+                                 reach[0][0], reach[0][1], reach[1], True)
+                copy_state = game_state.copy()
+                copy_state.processMove(this_move)
+                new_copy = copy_state.copy()
+                this_score = self.getMin(new_copy, depth-1)
+                # print("max: "+str(this_score), this_move.toString()+"\n")
+                if this_score > max_score:
+                    max_score = this_score
+                    max_move = this_move
+        return max_score
 
-        score_current = self.calculate_score_of_board(
-            peices_to_move, peices_to_reach)
-        best_new_score = score_current+99999999
-        move_to_make = None
-
-        for peice in peices_to_move:
-            this_peice_reach = self.getReachable(
-                peice, invalid_tiles, state)
-            this_peice_score = self.calculate_score_of_peice(
-                peice, peices_to_reach)
-            best_temp = None
-            best_score_moving_this = 9999999
-            for reachable in this_peice_reach:
-                for i in range(reachable[1], (peice.stack_size*-1)+1):
-                    temp = Tile(reachable[0][0], reachable[0][1])
-                    temp.stack_size = i*-1
-
-                    if depth == 0:
-                        temp_score = self.calculate_score_of_peice(
-                            temp, peices_to_reach)+((this_peice_score/peice.stack_size)*(peice.stack_size-temp.stack_size))
-                        print("(", peice.i, peice.j, ")",
-                              "(", temp.i, temp.j, ")", temp_score, temp.stack_size)
-                    else:
-                        game_state_copy = game_state.copy()
-                        temp_move = Move(
-                            peice.i, peice.j, temp.i, temp.j, temp.stack_size, False)
-                        game_state_copy.processMove(temp_move)
-                        temp_score = self.maxMove(
-                            peices_to_reach, peices_to_move, game_state_copy, depth)
-
-                    if temp_score < best_score_moving_this:
-                        best_score_moving_this = temp_score
-                        best_temp = temp.copy()
-                    del(temp)
-
-            score_after_making_best_move = (
-                score_current+best_score_moving_this-this_peice_score)
-            if (best_new_score > score_after_making_best_move):
-                best_new_score = score_after_making_best_move
-                move_to_make = Move(
-                    peice.i, peice.j, best_temp.i, best_temp.j, best_temp.stack_size, False)
-        print("Move chosen", move_to_make.from_pos,
-              move_to_make.to_pos, best_new_score)
-        return move_to_make
-
-    def maxMove(self, peices_to_move, peices_to_reach, game_state, depth):
-        state = game_state.getState()
-        moves_possible = []
+    def getMin(self, game_state, depth):
+        min_score = 999999999
         invalid_tiles = []
-        for peice in peices_to_reach:
+        player_peices = game_state.getPlayerPeices()
+        enemy_peices = game_state.getEnemyPeices()
+        for peice in player_peices:
             invalid_tiles.append((peice.i, peice.j))
+        for peice in enemy_peices:
+            # print("NEW PEICE")
+            # print(peice.i, peice.j)
+            reachable = self.getReachable(
+                peice, invalid_tiles, game_state.getState())
+            for reach in reachable:
+                this_move = Move(peice.i, peice.j,
+                                 reach[0][0], reach[0][1], reach[1]*-1, False)
+                copy_state = game_state.copy()
+                copy_state.processMove(this_move)
+                if depth == 0:
 
-        score_current = self.calculate_score_of_board(
-            peices_to_move, peices_to_reach)
-        best_new_score = score_current-99999999
-        move_to_make = None
+                    this_score = self.calculate_score_of_board(
+                        copy_state.getEnemyPeices(), copy_state.getPlayerPeices())
+                    # print("Root: "+str(this_score), this_move.toString())
+                else:
+                    new_copy = copy_state.copy()
+                    this_score = self.getMax(new_copy, depth)
+                    # print("min: "+str(this_score), this_move.toString())
+                min_score = min(min_score, this_score)
 
-        for peice in peices_to_move:
-            this_peice_reach = self.getReachable(
-                peice, invalid_tiles, state)
-            this_peice_score = self.calculate_score_of_peice(
-                peice, peices_to_reach)
-            best_temp = None
-            best_score_moving_this = -99999999
-            for reachable in this_peice_reach:
-                for i in range(reachable[1], (peice.stack_size)+1):
-                    temp = Tile(reachable[0][0], reachable[0][1])
-                    temp.stack_size = i
-
-                    game_state_copy = game_state.copy()
-                    temp_move = Move(
-                        peice.i, peice.j, temp.i, temp.j, temp.stack_size, True)
-                    game_state_copy.processMove(temp_move)
-                    temp_move = self.minMove(
-                        peices_to_reach, peices_to_move, game_state_copy, depth-1)
-                    game_state_copy.processMove(temp_move)
-                    temp_score = self.calculate_score_of_board(
-                        game_state_copy.getEnemyPeices(), game_state_copy.getPlayerPeices())
-
-                    if temp_score > best_score_moving_this:
-                        best_score_moving_this = temp_score
-                        best_temp = temp.copy()
-                    del(temp)
-
-            score_after_making_best_move = (
-                score_current+best_score_moving_this-this_peice_score)
-            if (best_new_score > score_after_making_best_move):
-                best_new_score = score_after_making_best_move
-                move_to_make = Move(
-                    peice.i, peice.j, best_temp.i, best_temp.j, best_temp.stack_size, True)
-
-        return best_new_score
+        return min_score
 
     def getReachable(self, peice, bad_tiles, state):
 

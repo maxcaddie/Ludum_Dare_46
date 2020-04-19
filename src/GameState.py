@@ -7,12 +7,10 @@ class GameState:
     def __init__(self):
         self.state = [[Tile(i_counter, j_counter) for i_counter in range(
             0, 9)] for j_counter in range(0, 9)]
-        self.addPeices(4, 4, 2, True)
-        self.addPeices(0, 0, -2, False)
 
     def move(self, from_tile, to_tile, player):
-        new_move = Move(from_tile.i, from_tile.j, to_tile.i,
-                        to_tile.j, from_tile.stack_size, player)
+        new_move = Move(from_tile.j, from_tile.i, to_tile.j,
+                        to_tile.i, from_tile.stack_size, player)
         self.processMove(new_move)
 
     def addPeices(self, i, j, number, player):
@@ -24,13 +22,13 @@ class GameState:
         self.addPeices(i, j, number*-1, player)
 
     def processMove(self, move):
-        from_i = move.from_pos[1]
-        from_j = move.from_pos[0]
+        from_i = move.from_pos[0]
+        from_j = move.from_pos[1]
 
         self.removePeices(from_i, from_j, move.size, move.player)
 
-        to_i = move.to_pos[1]
-        to_j = move.to_pos[0]
+        to_i = move.to_pos[0]
+        to_j = move.to_pos[1]
 
         self.addPeices(to_i, to_j, move.size, move.player)
 
@@ -83,3 +81,13 @@ class GameState:
                 if tile.isPlayer():
                     player_peices.append(tile)
         return player_peices
+
+    def printState(self):
+        nums = []
+        for row in self.state:
+            temp_row = []
+            for tile in row:
+                temp_row.append(tile.stack_size)
+            nums.append(temp_row)
+        for row in nums:
+            print(row)

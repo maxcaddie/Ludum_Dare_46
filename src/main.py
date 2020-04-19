@@ -12,6 +12,8 @@ def main():
     current_players_turn = True
 
     game_state = GameState()
+    game_state.addPeices(4, 4, 2, True)
+    game_state.addPeices(0, 5, -2, False)
     state = game_state.getState()
     enemy = Enemy()
 
@@ -39,10 +41,14 @@ def main():
                             if tile_clicked_on.isEmpty():
                                 game_state.move(
                                     selected_tile, tile_clicked_on, True)
+                                current_players_turn = False
                                 game_graphics.updateGraphics(state)
                                 selected_tile = None
                                 game_state.processMove(
                                     enemy.makeMove(game_state))
+                                for e in game_state.getEnemyPeices():
+                                    print(e.i, e.j)
+                                current_players_turn = True
                 else:
                     selected_tile = None
 

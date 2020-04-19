@@ -1,5 +1,5 @@
 import pygame
-
+import pygame.freetype
 from Graphics import TILE_SIZE, HEIGHT, WIDTH, TILE_GAP, PLAYER_COLOUR, ENEMY_COLOUR, EMPTY_COLOUR, SELECTED_COLOUR_OFFSET
 
 
@@ -18,9 +18,9 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         x_offset = int((WIDTH/2)-(TILE_SIZE/2)) + \
-            ((self.i-4)*(TILE_GAP+TILE_SIZE))
-        y_offset = int((HEIGHT/2)-(TILE_SIZE/2)) + \
             ((self.j-4)*(TILE_GAP+TILE_SIZE))
+        y_offset = int((HEIGHT/2)-(TILE_SIZE/2)) + \
+            ((self.i-4)*(TILE_GAP+TILE_SIZE))
 
         self.rect = self.rect.move(x_offset, y_offset)
 

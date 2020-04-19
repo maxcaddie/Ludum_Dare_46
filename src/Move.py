@@ -4,3 +4,6 @@ class Move:
         self.to_pos = (to_i, to_j)
         self.size = size
         self.player = player
+
+    def toString(self):
+        return "F: "+str(self.from_pos)+" T: "+str(self.to_pos)+" S: "+str(self.size)+" P: "+str(self.player)
